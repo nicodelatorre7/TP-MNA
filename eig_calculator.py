@@ -1,66 +1,81 @@
 import numpy as np
-from sympy import *
+
+MAX_ITERATIONS = 1000
+ERROR = 0.001
 
 
 
-def eig_calculator(matrix):
+## Implementacion de Householder QR -> https://www.cs.cornell.edu/~bindel/class/cs6210-f09/lec18.pdf
+def qr_decomposition(A):
+    
     #shape me dice de cuanto por cuanto es la matriz -> m = filas ; n = columnas (m deberia ser = a n siempre)
-    m, n = np.shape(matrix)
-    if n != m:
-        raise Exception("The matrix must be square to obtain eigenvalues!")
+    m, n = np.shape(A)
+    Q = np.eye(m)
+    R = np.copy(A)
+    for i in range(n):
+        
+        norm = np.linalg.norm(R[i:m, i])
+        u1 = R[i, i] + np.sign(R[i, i]) * norm
+        v = R[i:m, i].reshape((-1, 1)) / u1
+        v[0] = 1
+        tau = np.sign(R[i, i]) * u1 / norm
 
-    I = np.eye(n)
-    x = Symbol('x')
+        # Ahorro la multiplicacion de matrices: solo necesito restar una columna de cada matriz
+        R[i:m, :] = R[i:m, :] - (tau * v) * np.dot(v.reshape((1, -1)), R[i:m, :])
+        Q[:, i:n] = Q[:, i:n] - (Q[:, i:m].dot(v)).dot(tau * v.transpose())
 
-    aux = Matrix(matrix - I*x)
-    eq1 = aux.det()
-    eig_values = solve(eq1,x)
+    return Q, R
 
-    #redondeo a 4 decimales
-    i=0
-    while i < n:
-        eig_values[i] = round(eig_values[i],4)
+
+
+def eig_calculator(a):
+    q, r = qr_decomposition(a)
+    qcomp = q
+
+    i = 0
+    b = 1
+
+    old_val = np.zeros(r.shape[0])
+    new_val = np.ones(r.shape[0])
+
+    while b > ERROR and i < MAX_ITERATIONS:
+
+        old_val = new_val
+        a = np.matmul(q.transpose(), a)
+        a = np.matmul(a, q)
+        q, r = qr_decomposition(a)
+        new_val = np.diag(a)
+        qcomp = np.matmul(qcomp, q)
         i+=1
+        b = max(abs(new_val-old_val))
 
 
-    """
-    ##
-    # HASTA ACA ANDA 
-    # LO DE ABAJO NO, SOLO CALCULA AUTOVALORES,
-    # Y EN AUTOVECTORES TIRA CUALQUIER MIERDA#
-    ##
-    """
+    # para la normalizacion
+    for i in range(0, qcomp.shape[0]):
+        qcomp[:, i] = qcomp[:, i] / np.linalg.norm(qcomp[:, i])
 
-    # adaptacion de: https://www.youtube.com/watch?v=ssfMqFycXOU a python
-    eig_vectors = np.zeros((n,n))
-    # print(eig_vectors)
-    # i = 0
-    # while i < n:
-    #     M = Matrix( matrix - eig_values[i]* I)
-    #     M_red = M.rref()
-        # print("M_RED: ")
-        # print(M_red)
-        # print("M_RED[i]: ")
-        # print(M_red[0][i])
-        # res.append(-M_red[n-1][i])
-        # eig_vectors[i] = -M_red[n-1][i]
-    #     print(-M_red[1][i])
-        # i+=1
+    #ordeno autovectores de acuerdo al peso de los autovalores
+    a = np.diag(a)
 
-    # print(eig_vectors)
+    #argsort es ascendente por default, entonces le pongo - para hacerlo descendente.
+    sort = np.argsort(- np.absolute(a))
 
-    return eig_values,eig_vectors
+    eVal = a[sort]
+    eVec = qcomp[:, sort]
+
+    #cada col de eVec tiene un autovalor asociado en la misma columna de eVal
+    return eVal, eVec
 
 
-def main():
-    x = np.array([[1,2,3],[4,5,6],[7,4,9]])
-    #x = np.array([[0.9, 0.01 , 0.09],[0.09, 0.9 , 0.01],[0.09,0.01,0.9]] )
-    # print("....X....")
-    # print(x)
-    eVal, eVec = eig_calculator(x)
-    print("....A-Valores....")
-    print(eVal)
-    print("....A-Vectores....")
-    print(eVec)
+"""
+        TESTEO
+"""
 
-main()
+# A = np.random.rand(5,5)*1000
+# val,vec = eig_calculator(A)
+# print(val)
+# print(np.linalg.eig(A)[0])
+# print(vec)
+# print("\n")
+# print(np.linalg.eig(A)[1])
+
