@@ -6,6 +6,9 @@ ERROR = 0.001
 
 
 ## Implementacion de Householder QR -> https://www.cs.cornell.edu/~bindel/class/cs6210-f09/lec18.pdf
+#  Compute the QR decomposition of an m-by-n matrix A using
+#  Householder transformations.
+##
 def qr_decomposition(A):
     
     #shape me dice de cuanto por cuanto es la matriz -> m = filas ; n = columnas (m deberia ser = a n siempre)
@@ -27,7 +30,7 @@ def qr_decomposition(A):
     return Q, R
 
 
-
+# https://en.wikipedia.org/wiki/QR_algorithm 
 def eig_calculator(a):
     q, r = qr_decomposition(a)
     qcomp = q
