@@ -11,8 +11,10 @@ from tensorflow import keras
 faces_path = 'caras-db'
 
 people_count = 25
-images_count = 10
+images_count = 9
 img_area = 112 * 92
+
+eigenfaces = 
 
 def get_training_images():
     # arreglo con imagenes
@@ -44,6 +46,7 @@ def pca_training():
 
 
     # CALCULAR AUTOVECTORES DE LA MATRIZ
+
 
 
 def classify(eigenfaces, input):
