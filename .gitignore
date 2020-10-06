@@ -5,3 +5,4 @@ __pycache__/*
 
 gram_schmidt_test.py
 pca_test.py
+.DS_Store
