@@ -32,7 +32,7 @@ def gram_schmidt(matrix):
 
 
 
-def cmp_eigen(old_R, new_R):
+def compare_eig(old_R, new_R):
     for i in range(0, old_R.shape[0]):
         if abs(old_R[i][i] - new_R[i][i]) > EPSILON:
             # print(abs(old_R[i][i] - new_R[i][i]))

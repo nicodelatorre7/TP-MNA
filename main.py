@@ -1,4 +1,4 @@
-import pca_test as pca
+import pca as pca
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 

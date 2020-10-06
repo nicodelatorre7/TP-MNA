@@ -5,7 +5,7 @@ import numpy as numpy
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
-import eig_calculator as ec
+from eig_calculator import gram_schmidt, compare_eig
 from sklearn import svm
 
 
@@ -21,6 +21,7 @@ max_eigenfaces = 100
 def get_training_images():
     # arreglo con imagenes
     images = numpy.zeros([people_count*images_count, img_area])
+    people = numpy.zeros([people_count*images_count,1])
 
     # completamos el arreglo
     print("reading images... ")
@@ -29,37 +30,46 @@ def get_training_images():
         i = k + 1
         for k2 in range(images_count):
             i2 = k2 +1
-            img = plt.imread('./'+faces_path+'/s{}/{}'.format(i,i2)+'.pgm')
+            img = plt.imread('./'+faces_path+'/s{}/{}'.format(i,i2)+'.pgm')/255.0
             images[im_num,:] = numpy.reshape(img,[1,img_area])
+            people[im_num,0] = i 
             im_num += 1
+
+    return images, people
+
+def pca_training():
+    images, people = get_training_images()
 
     # calculamos la "cara media" y la restamos del arreglo de imagenes.
     average_face = numpy.mean(images, 0)
     for i in range(images.shape[0]):
         images[i, :] -= average_face
 
-    return images
-
-def pca_training():
-    images = get_training_images()
-
     print("calculating cov_matrix... ")
-    # matriz de covarianza
-    A = numpy.transpose(images)
-    n, m = A.shape
-    cov_mat = numpy.dot(images, A)
-
-    print("calculating eigenfaces")
+    T = numpy.transpose(images)
+    n, m = T.shape
+    L = numpy.dot(images, T)
     
-    images_matrix = numpy.asmatrix(images)
-    # eigenvalues, eigenfaces = numpy.linalg.eig(cov_mat)
-    # eigenvalues, eigenfaces = ec.eig_calculator(cov_mat)
+    #A = np.array([[60., 30., 20.], [30., 20., 15.], [20., 15., 12.]])
+    last_R = numpy.zeros(T.shape)
+    eigen = False
+    eigen_L = 1
+    
+    
+    while not eigen:
+        Q, R = gram_schmidt(L)
+        L = numpy.dot(R, Q)
+        eigen_L = numpy.dot(eigen_L, Q)
+        eigen = compare_eig(last_R, R)
+        last_R = R
+    
+    eigen_C = numpy.dot(T, eigen_L)
     
     for i in range(m):
-        eigenfaces[:,i] /= numpy.linalg.norm(eigenfaces[:,i])
+        eigen_C[:,i] /= numpy.linalg.norm(eigen_C[:,i])
 
 
-    return eigenfaces[:,0:max_eigenfaces]
+    return eigen_C[:,0:max_eigenfaces]
 
     
 
@@ -108,7 +118,34 @@ def classify(eigenfaces, input):
 
 
 
+def classify_svm(eigenfaces, input):
+    # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
 
+    # (train_images, train_labels) 
+    # (test_image, test_label)
+
+    train_images, people = get_training_images()
+
+    test_image = numpy.zeros([1,img_area])
+    input = input/255.0
+    test_image[0,:] = numpy.reshape(input,[1,img_area])
+
+    # calculamos la "cara media" y la restamos del arreglo de imagenes.
+    average_face = numpy.mean(train_images, 0)
+    for i in range(test_image.shape[0]):
+        test_image[i, :] -= average_face
+
+
+    train_images      = numpy.dot(train_images,eigenfaces)
+    test_image   = numpy.dot(test_image,eigenfaces)
+
+    people = numpy.asarray(people).ravel()
+
+    clf = svm.LinearSVC()
+    clf.fit(train_images, people)
+    
+
+    return clf.predict(test_image)
 
 
 
