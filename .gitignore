@@ -1,5 +1,7 @@
 
 .vscode
+__pycache__/*
+
 
 gram_schmidt_test.py
 pca_test.py

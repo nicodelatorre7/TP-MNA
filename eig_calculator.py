@@ -2,83 +2,60 @@ import numpy as np
 
 MAX_ITERATIONS = 1000
 ERROR = 0.001
+EPSILON = 1e-2
 
 
-
-## Implementacion de Householder QR -> https://www.cs.cornell.edu/~bindel/class/cs6210-f09/lec18.pdf
-#  Compute the QR decomposition of an m-by-n matrix A using
-#  Householder transformations.
 ##
-def qr_decomposition(A):
+# Adaptacion del algoritmo de descomposicion QR con Gram-Schmidt
+# -- https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
+# -- https://en.wikipedia.org/wiki/QR_decomposition
+# -- https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf 
+##
+def gram_schmidt(matrix):
+    m, n = matrix.shape
     
-    #shape me dice de cuanto por cuanto es la matriz -> m = filas ; n = columnas (m deberia ser = a n siempre)
-    m, n = np.shape(A)
-    Q = np.eye(m)
-    R = np.copy(A)
-    for i in range(n):
-        
-        norm = np.linalg.norm(R[i:m, i])
-        u1 = R[i, i] + np.sign(R[i, i]) * norm
-        v = R[i:m, i].reshape((-1, 1)) / u1
-        v[0] = 1
-        tau = np.sign(R[i, i]) * u1 / norm
+    if n != m:
+        raise Exception("The matrix must be square to obtain eigenvalues!")
 
-        # Ahorro la multiplicacion de matrices: solo necesito restar una columna de cada matriz
-        R[i:m, :] = R[i:m, :] - (tau * v) * np.dot(v.reshape((1, -1)), R[i:m, :])
-        Q[:, i:n] = Q[:, i:n] - (Q[:, i:m].dot(v)).dot(tau * v.transpose())
+    Q = np.zeros(shape=(m, n))
+    R = np.zeros(shape=(n, n))
+
+    for k in range(0, n):
+        R[k, k] = np.linalg.norm(matrix[0:m, k])
+        Q[0:m, k] = matrix[0:m, k] / R[k, k]
+
+        for j in range(k + 1, n):
+            R[k, j] = np.dot(np.transpose(Q[0:m, k]), matrix[0:m, j])
+            matrix[0:m, j] = matrix[0:m, j] - np.dot(Q[0:m, k], R[k, j])
 
     return Q, R
 
 
-# https://en.wikipedia.org/wiki/QR_algorithm 
-def eig_calculator(a):
-    q, r = qr_decomposition(a)
-    qcomp = q
 
-    i = 0
-    b = 1
+def cmp_eigen(old_R, new_R):
+    for i in range(0, old_R.shape[0]):
+        if abs(old_R[i][i] - new_R[i][i]) > EPSILON:
+            # print(abs(old_R[i][i] - new_R[i][i]))
+            return False
 
-    old_val = np.zeros(r.shape[0])
-    new_val = np.ones(r.shape[0])
-
-    while b > ERROR and i < MAX_ITERATIONS:
-
-        old_val = new_val
-        a = np.matmul(q.transpose(), a)
-        a = np.matmul(a, q)
-        q, r = qr_decomposition(a)
-        new_val = np.diag(a)
-        qcomp = np.matmul(qcomp, q)
-        i+=1
-        b = max(abs(new_val-old_val))
+    return True
 
 
-    # para la normalizacion
-    for i in range(0, qcomp.shape[0]):
-        qcomp[:, i] = qcomp[:, i] / np.linalg.norm(qcomp[:, i])
-
-    #ordeno autovectores de acuerdo al peso de los autovalores
-    a = np.diag(a)
-
-    #argsort es ascendente por default, entonces le pongo - para hacerlo descendente.
-    sort = np.argsort(- np.absolute(a))
-
-    eVal = a[sort]
-    eVec = qcomp[:, sort]
-
-    #cada col de eVec tiene un autovalor asociado en la misma columna de eVal
-    return eVal, eVec
 
 
 """
         TESTEO
 """
 
-# A = np.random.rand(3,3)*1000
-# val,vec = eig_calculator(A)
+# A = np.array([[12,-51,4],[6,167,-68],[-4,24,-41]])
+# val,vec = gram_schmidt(A)
+# print("VALUES")
 # print(val)
+# print("EIG_VALUES")
 # print(np.linalg.eig(A)[0])
-# print(vec[:,0:2])
+# print("VECTOR")
+# print(vec)
 # print("\n")
+# print("EIG_VEC")
 # print(np.linalg.eig(A)[1])
 
