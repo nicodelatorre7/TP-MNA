@@ -74,11 +74,11 @@ def eig_calculator(a):
         TESTEO
 """
 
-# A = np.random.rand(5,5)*1000
+# A = np.random.rand(3,3)*1000
 # val,vec = eig_calculator(A)
 # print(val)
 # print(np.linalg.eig(A)[0])
-# print(vec)
+# print(vec[:,0:2])
 # print("\n")
 # print(np.linalg.eig(A)[1])
 

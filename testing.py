@@ -1,8 +1,7 @@
-
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-img = mpimg.imread('./test_image.pgm')
+img = mpimg.imread('./input_face/face.pgm')
 
 print(img)
 
