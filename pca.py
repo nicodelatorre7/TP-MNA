@@ -15,12 +15,8 @@ people_count = 3
 images_count = 9
 img_area = 112 * 92
 
-<<<<<<< HEAD
 # heuristics
 max_eigenfaces = 100
-=======
-# eigenfaces =
->>>>>>> kpca started
 
 def get_training_images():
     # arreglo con imagenes
@@ -78,7 +74,7 @@ def pca_training():
 
 
 
-def classify(eigenfaces, input):
+def classify_svm(eigenfaces, input):
     # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
 
     # (train_images, train_labels)
