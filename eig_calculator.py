@@ -9,11 +9,11 @@ EPSILON = 1e-2
 # Adaptacion del algoritmo de descomposicion QR con Gram-Schmidt
 # -- https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
 # -- https://en.wikipedia.org/wiki/QR_decomposition
-# -- https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf 
+# -- https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
 ##
 def gram_schmidt(matrix):
     m, n = matrix.shape
-    
+
     if n != m:
         raise Exception("The matrix must be square to obtain eigenvalues!")
 
