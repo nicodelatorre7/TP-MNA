@@ -27,4 +27,4 @@ for k in range(0, testing_num):
 for k in range(0, testing_num):
     print( "image {0} belongs to the {1} person.".format(k+1,results[k]))
 
-    
+

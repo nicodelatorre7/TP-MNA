@@ -32,7 +32,7 @@ def get_training_images():
             i2 = k2 +1
             img = plt.imread('./'+faces_path+'/s{}/{}'.format(i,i2)+'.pgm')/255.0
             images[im_num,:] = numpy.reshape(img,[1,img_area])
-            people[im_num,0] = i 
+            people[im_num,0] = i
             im_num += 1
 
     return images, people
@@ -49,36 +49,32 @@ def pca_training():
     T = numpy.transpose(images)
     n, m = T.shape
     L = numpy.dot(images, T)
-    
+
     #A = np.array([[60., 30., 20.], [30., 20., 15.], [20., 15., 12.]])
     last_R = numpy.zeros(T.shape)
     eigen = False
     eigen_L = 1
-    
-    
+
+
     while not eigen:
         Q, R = gram_schmidt(L)
         L = numpy.dot(R, Q)
         eigen_L = numpy.dot(eigen_L, Q)
         eigen = compare_eig(last_R, R)
         last_R = R
-    
+
     eigen_C = numpy.dot(T, eigen_L)
-    
+
     for i in range(m):
         eigen_C[:,i] /= numpy.linalg.norm(eigen_C[:,i])
 
-
-    return eigen_C[:,0:max_eigenfaces]
-
-    
-
-
+    a = eigen_C[:,0:max_eigenfaces]
+    return a
 
 def classify(eigenfaces, input):
     # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
 
-    # (train_images, train_labels) 
+    # (train_images, train_labels)
     # (test_image, test_label)
 
     train_images = get_training_images()
@@ -94,7 +90,7 @@ def classify(eigenfaces, input):
     keras.layers.Dense(128, activation='relu'),  # 128 nodos de aprendizaje
     keras.layers.Dense(people_count)             # people_count possible labels
     ])
-    
+
     print("compiling classification module... ")
     model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -107,11 +103,10 @@ def classify(eigenfaces, input):
     print("feeding training images into neural net... ")
     model.fit(train_images, train_labels, epochs=10)
 
-    probability_model = tf.keras.Sequential([model, 
+    probability_model = tf.keras.Sequential([model,
                                          tf.keras.layers.Softmax()])
-    
 
-    #test_image = (numpy.expand_dims(test_image,0))
+
     predictions = probability_model.predict(test_image)
 
     return predictions[0]
@@ -120,9 +115,6 @@ def classify(eigenfaces, input):
 
 def classify_svm(eigenfaces, input):
     # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
-
-    # (train_images, train_labels) 
-    # (test_image, test_label)
 
     train_images, people = get_training_images()
 
@@ -143,7 +135,7 @@ def classify_svm(eigenfaces, input):
 
     clf = svm.LinearSVC()
     clf.fit(train_images, people)
-    
+
 
     return clf.predict(test_image)
 
