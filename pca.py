@@ -111,8 +111,6 @@ def classify(eigenfaces, input):
 
     return predictions[0]
 
-
-
 def classify_svm(eigenfaces, input):
     # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
 
