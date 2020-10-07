@@ -2,7 +2,6 @@ import numpy as np
 
 MAX_ITERATIONS = 1000
 ERROR = 0.001
-EPSILON = 1e-2
 
 
 ##
@@ -32,10 +31,9 @@ def gram_schmidt(matrix):
 
 
 
-def compare_eig(old_R, new_R):
-    for i in range(0, old_R.shape[0]):
-        if abs(old_R[i][i] - new_R[i][i]) > EPSILON:
-            # print(abs(old_R[i][i] - new_R[i][i]))
+def compare_eig(old, new):
+    for i in range(0, old.shape[0]):
+        if abs(old[i][i] - new[i][i]) > ERROR:
             return False
 
     return True
