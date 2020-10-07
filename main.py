@@ -4,9 +4,9 @@ import matplotlib.image as mpimg
 
 eigenfaces = pca.pca_training()
 
-img_0 = mpimg.imread('./input_face/face_person_0.pgm')
-img_1 = mpimg.imread('./input_face/face_person_1.pgm')
-img_2 = mpimg.imread('./input_face/face_person_2.pgm')
+img_0 = mpimg.imread('./input_face/face_person_1.pgm')
+img_1 = mpimg.imread('./input_face/face_person_2.pgm')
+img_2 = mpimg.imread('./input_face/face_person_3.pgm')
 
 
 print("there are {0} eigenfaces".format(eigenfaces.shape))
