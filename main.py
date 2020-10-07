@@ -5,14 +5,14 @@ import numpy as np
 
 
 
-testing_num = 25
+testing_num = 28
 img_area = 112 * 92
 images = np.zeros([testing_num, 112, 92])
 
 print("reading testing images... ")
 for k in range(testing_num):
     images[k, :, :] = mpimg.imread('./input_face/face_person_{0}.pgm'.format(k+1))
-    print(images[k,:, :])
+    # print(images[k,:, :])
 
 
 eigenfaces = pca.pca_training()
