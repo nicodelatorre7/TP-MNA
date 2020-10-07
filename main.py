@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-testing_num = 28
+testing_num = 30
 img_area = 112 * 92
 images = np.zeros([testing_num, 112, 92])
 

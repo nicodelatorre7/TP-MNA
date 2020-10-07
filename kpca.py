@@ -11,7 +11,7 @@ import eig_calculator as eig
 
 faces_path = 'caras-db'
 
-people_count = 28
+people_count = 30
 images_count = 7
 img_area = 112 * 92
 
