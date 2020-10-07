@@ -11,8 +11,8 @@ from sklearn import svm
 
 faces_path = 'caras-db'
 
-people_count = 3
-images_count = 9
+people_count = 25
+images_count = 7
 img_area = 112 * 92
 
 # heuristics
