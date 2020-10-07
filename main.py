@@ -1,31 +1,30 @@
 import pca as pca
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import numpy as np
+
+
+
+testing_num = 25
+img_area = 112 * 92
+images = np.zeros([testing_num, 112, 92])
+
+print("reading testing images... ")
+for k in range(testing_num):
+    images[k, :, :] = mpimg.imread('./input_face/face_person_{0}.pgm'.format(k+1))
+    print(images[k,:, :])
+
 
 eigenfaces = pca.pca_training()
 
-img_0 = mpimg.imread('./input_face/face_person_1.pgm')
-img_1 = mpimg.imread('./input_face/face_person_2.pgm')
-img_2 = mpimg.imread('./input_face/face_person_3.pgm')
-
-
 print("there are {0} eigenfaces".format(eigenfaces.shape))
 
-img_00 = pca.classify_svm(eigenfaces, img_0)
-img_10 = pca.classify_svm(eigenfaces, img_1)
-img_20 = pca.classify_svm(eigenfaces, img_2)
 
+results = np.zeros(testing_num)
+for k in range(0, testing_num):
+    results[k] = pca.classify_svm(eigenfaces, images[k,:,:])
 
-print( "image 0 belongs to the {0} person.".format(img_00))
-print( "image 1 belongs to the {0} person.".format(img_10))
-print( "image 2 belongs to the {0} person.".format(img_20))
+for k in range(0, testing_num):
+    print( "image {0} belongs to the {1} person.".format(k+1,results[k]))
 
-img_01 = pca.classify_svm(eigenfaces, img_0)
-img_11 = pca.classify_svm(eigenfaces, img_1)
-img_21 = pca.classify_svm(eigenfaces, img_2)
-
-
-print( "image 0 belongs to the {0} person.".format(img_01))
-print( "image 1 belongs to the {0} person.".format(img_11))
-print( "image 2 belongs to the {0} person.".format(img_21))
     
