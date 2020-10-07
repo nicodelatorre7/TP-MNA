@@ -68,13 +68,10 @@ def pca_training():
     for i in range(m):
         eigen_C[:,i] /= numpy.linalg.norm(eigen_C[:,i])
 
+    a = eigen_C[:,0:max_eigenfaces]
+    return a
 
-    return eigen_C[:,0:max_eigenfaces]
-
-
-
-
-def classify_svm(eigenfaces, input):
+def classify(eigenfaces, input):
     # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
 
     # (train_images, train_labels)
@@ -110,7 +107,6 @@ def classify_svm(eigenfaces, input):
                                          tf.keras.layers.Softmax()])
 
 
-    #test_image = (numpy.expand_dims(test_image,0))
     predictions = probability_model.predict(test_image)
 
     return predictions[0]
@@ -119,9 +115,6 @@ def classify_svm(eigenfaces, input):
 
 def classify_svm(eigenfaces, input):
     # A partir de las eigenfaces y una imagen de entrada, determinar a qué persona pertenece la imagen de entrada
-
-    # (train_images, train_labels)
-    # (test_image, test_label)
 
     train_images, people = get_training_images()
 
