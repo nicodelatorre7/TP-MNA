@@ -17,7 +17,7 @@ img_area = 112 * 92
 
 matrix_d = people_count*images_count
 # heuristics
-max_eigenfaces = 30
+max_eigenfaces = 50
 
 def get_training_images():
     # arreglo con imagenes

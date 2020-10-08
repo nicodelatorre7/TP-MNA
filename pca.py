@@ -16,7 +16,7 @@ images_count = 7
 img_area = 112 * 92
 
 # heuristics
-max_eigenfaces = 20
+max_eigenfaces = 50
 
 def get_training_images():
     # arreglo con imagenes
