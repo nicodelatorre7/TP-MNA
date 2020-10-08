@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 
-testing_num = 30
+testing_num = 31
 img_area = 112 * 92
 images = np.zeros([testing_num, 112, 92])
 print('######################### KPCA #########################\n')
@@ -24,7 +24,8 @@ for k in range(0, testing_num):
 
 counter = 0
 for k in range(0, testing_num):
-    counter +=1 if k+1 == results[k]
+    if k+1 == results[k]:
+        counter +=1 
     print( "-> Image {0} belongs to the {1} person.".format(k+1,results[k]))
 
 print('\n Finished Processing Images')

@@ -5,10 +5,10 @@ import numpy as np
 
 
 
-testing_num = 30
+testing_num = 31
 img_area = 112 * 92
 images = np.zeros([testing_num, 112, 92])
-print('######################### KPCA #########################\n')
+print('######################### PCA #########################\n')
 
 print("* Reading testing images... ")
 for k in range(testing_num):
@@ -28,6 +28,8 @@ for k in range(0, testing_num):
 counter = 0
 for k in range(0, testing_num):
     print( "-> Image {0} belongs to the {1} person.".format(k+1,results[k]))
+    if k+1 == results[k]:
+        counter +=1 
 
 print('\n Finished Processing Images')
 print('* Images scanned: {0}'.format(testing_num))

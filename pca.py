@@ -11,12 +11,12 @@ from sklearn import svm
 
 faces_path = 'caras-db'
 
-people_count = 30
+people_count = 31
 images_count = 7
 img_area = 112 * 92
 
 # heuristics
-max_eigenfaces = 100
+max_eigenfaces = 20
 
 def get_training_images():
     # arreglo con imagenes
