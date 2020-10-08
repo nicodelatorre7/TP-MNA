@@ -24,7 +24,8 @@ def get_training_images():
     people = numpy.zeros([people_count*images_count,1])
 
     # completamos el arreglo
-    print("reading images... ")
+    print("\n[ TRAINING ]")
+    print("* Reading images... ")
     im_num = 0
     for k in range(people_count):
         i = k + 1
@@ -45,7 +46,7 @@ def pca_training():
     for i in range(images.shape[0]):
         images[i, :] -= average_face
 
-    print("calculating cov_matrix... ")
+    print("* Calculating covariance matrix... ")
     T = numpy.transpose(images)
     n, m = T.shape
     L = numpy.dot(images, T)
@@ -55,7 +56,7 @@ def pca_training():
     eigen = False
     eigen_L = 1
 
-
+    print('* Getting eigenvalues and eigenvectors..')
     while not eigen:
         Q, R = gram_schmidt(L)
         L = numpy.dot(R, Q)
